@@ -14,13 +14,19 @@ func NewESClient() *ESClient {
 	return &ESClient{elastic.NewClient()}
 }
 
-func (esc *ESClient) CreateIndex(name string) {
+func (esc *ESClient) CreateIndexIfNotExist(name string) {
 
-	_, err := esc.client.CreateIndex(name).Do()
+	exist, err := esc.client.IndexExists(name).Do()
 	if err != nil {
-		log.Errorf("Failed creating index %s. %+v", name, err)
-	} else {
-		log.Debugf("Index %s created", name)
+		log.Errorf("Failed checking if index exist %s. %+v", name, err)
+	}
+	if !exist {
+		_, err := esc.client.CreateIndex(name).Do()
+		if err != nil {
+			log.Errorf("Failed creating index %s. %+v", name, err)
+		} else {
+			log.Debugf("Index %s created", name)
+		}
 	}
 }
 
