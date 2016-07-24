@@ -1,4 +1,4 @@
-package main
+package publisher
 
 import (
 	"compress/gzip"
@@ -9,10 +9,10 @@ import (
 	"strings"
 )
 
-func publish(writer http.ResponseWriter, request *http.Request) {
+func Handle(writer http.ResponseWriter, request *http.Request) {
 
 	retStatus := http.StatusOK
-	_, err := getGzip(request)
+	_, err := getBodyReader(request)
 	if err != nil {
 		retStatus = http.StatusBadRequest
 		log.Error(err)
@@ -20,15 +20,16 @@ func publish(writer http.ResponseWriter, request *http.Request) {
 	writer.WriteHeader(retStatus)
 }
 
-func getGzip(request *http.Request) (io.ReadCloser, error) {
+func getBodyReader(request *http.Request) (io.ReadCloser, error) {
 
 	body := request.Body
 	if body == nil {
 		return nil, errors.New("Empty request body")
 	}
-	if !strings.Contains(request.Header.Get("Content-Type"), "gzip") {
-		return nil, errors.New("Content-Type should be gzip")
+	contentType := request.Header.Get("Content-Type")
+	if strings.Contains(contentType, "gzip") {
+		return gzip.NewReader(body), nil
 	}
 
-	return gzip.NewReader(body)
+	return body, nil
 }
