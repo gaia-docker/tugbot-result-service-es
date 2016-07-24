@@ -3,17 +3,17 @@ package main
 import (
 	"fmt"
 	log "github.com/Sirupsen/logrus"
-	"github.com/fsouza/go-dockerclient/external/github.com/gorilla/mux"
 	"github.com/urfave/cli"
 	"net/http"
 	"os"
+	"github.com/gorilla/mux"
 )
 
 var port string
 
 func main() {
 	app := cli.NewApp()
-	app.Version = "0.0.1"
+	app.Version = "1.0.0"
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:        "port, p",
@@ -37,6 +37,7 @@ func main() {
 }
 
 func before(c *cli.Context) error {
+
 	if c.GlobalBool("debug") {
 		log.SetLevel(log.DebugLevel)
 	}
@@ -45,6 +46,7 @@ func before(c *cli.Context) error {
 }
 
 func start(c *cli.Context) error {
+
 	log.Info("Starting tugbot elasticsearch result service...")
 	router := mux.NewRouter().StrictSlash(true)
 	router.Handle("/results", publish).Methods("POST").Headers("Content-Type", "application/gzip")

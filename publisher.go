@@ -10,6 +10,7 @@ import (
 )
 
 func publish(writer http.ResponseWriter, request *http.Request) {
+
 	retStatus := http.StatusOK
 	_, err := getGzip(request)
 	if err != nil {
@@ -20,6 +21,7 @@ func publish(writer http.ResponseWriter, request *http.Request) {
 }
 
 func getGzip(request *http.Request) (io.ReadCloser, error) {
+
 	body := request.Body
 	if body == nil {
 		return nil, errors.New("Empty request body")
