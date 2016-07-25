@@ -1,4 +1,4 @@
-package publisher
+package publish
 
 import (
 	"compress/gzip"
@@ -12,9 +12,16 @@ import (
 func Handle(writer http.ResponseWriter, request *http.Request) {
 
 	retStatus := http.StatusOK
-	_, err := getBodyReader(request)
+	body, err := getBodyReader(request)
 	if err != nil {
 		retStatus = http.StatusBadRequest
+		log.Error(err)
+	}
+	params := request.URL.Query()
+	publisher := JsonPublisher{}
+	_, err = publisher.Publish(body, params.Get("docker.imagename"))
+	if err != nil {
+		retStatus = http.StatusInternalServerError
 		log.Error(err)
 	}
 	writer.WriteHeader(retStatus)

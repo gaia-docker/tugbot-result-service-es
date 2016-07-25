@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	log "github.com/Sirupsen/logrus"
+	"github.com/gaia-docker/tugbot-result-service-es/publish"
 	"github.com/gorilla/mux"
 	"github.com/urfave/cli"
 	"net/http"
 	"os"
-	"github.com/gaia-docker/tugbot-result-service-es/publisher"
 )
 
 var port string
@@ -50,7 +50,7 @@ func start(c *cli.Context) error {
 
 	log.Info("Starting tugbot elasticsearch result service...")
 	router := mux.NewRouter().StrictSlash(true)
-	router.Handle("/results", publisher.Handle).Methods("POST").HeadersRegexp("Content-Type", "application/(gzip|json)")
+	router.Handle("/results", publish.Handle).Methods("POST").HeadersRegexp("Content-Type", "application/(gzip|json)")
 	log.Infof("Tugbot elasticsearch result service listening on port %s", port)
 
 	return http.ListenAndServe(fmt.Sprintf(":%s", port), router)
