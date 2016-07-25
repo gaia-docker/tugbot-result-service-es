@@ -11,7 +11,8 @@ type ESClient struct {
 
 func NewESClient() *ESClient {
 
-	return &ESClient{elastic.NewClient()}
+	client, _ := elastic.NewClient()
+	return &ESClient{client}
 }
 
 func (esc *ESClient) CreateIndexIfNotExist(name string) error {

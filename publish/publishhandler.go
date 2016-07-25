@@ -18,7 +18,7 @@ func Handle(writer http.ResponseWriter, request *http.Request) {
 		log.Error(err)
 	}
 	params := request.URL.Query()
-	publisher := JsonPublisher{}
+	publisher := NewJsonPublisher()
 	_, err = publisher.Publish(body, params.Get("docker.imagename"))
 	if err != nil {
 		retStatus = http.StatusInternalServerError
@@ -35,7 +35,7 @@ func getBodyReader(request *http.Request) (io.ReadCloser, error) {
 	}
 	contentType := request.Header.Get("Content-Type")
 	if strings.Contains(contentType, "gzip") {
-		return gzip.NewReader(body), nil
+		return gzip.NewReader(body)
 	}
 
 	return body, nil

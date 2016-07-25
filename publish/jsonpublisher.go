@@ -11,6 +11,11 @@ type JsonPublisher struct {
 	esClient *elasticclient.ESClient
 }
 
+func NewJsonPublisher() *JsonPublisher {
+
+	return &JsonPublisher{elasticclient.NewESClient()}
+}
+
 func (jp JsonPublisher) Publish(reader io.ReadCloser, indexNameSuffix string) (*string, error) {
 
 	indexName := "tugbot_" + indexNameSuffix
