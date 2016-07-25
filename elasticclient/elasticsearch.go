@@ -2,8 +2,11 @@ package elasticclient
 
 import (
 	log "github.com/Sirupsen/logrus"
-	"github.com/olivere/elastic"
+	"gopkg.in/olivere/elastic.v2"
+	"regexp"
 )
+
+const illegalCharactersRegexp = "[:,?<>/\\*?| ]"
 
 type ESClient struct {
 	client *elastic.Client
@@ -15,22 +18,23 @@ func NewESClient() *ESClient {
 	return &ESClient{client}
 }
 
-func (esc *ESClient) CreateIndexIfNotExist(name string) error {
+func (esc *ESClient) CreateIndexIfNotExist(name string) (string, error) {
 
-	exist, err := esc.client.IndexExists(name).Do()
+	validIndexName := esc.removeIllegalCharacters(name)
+	exist, err := esc.client.IndexExists(validIndexName).Do()
 	if err != nil {
-		log.Errorf("Failed checking if index exist %s. %+v", name, err)
+		log.Errorf("Failed checking if index exist %s. %+v", validIndexName, err)
 	}
 	if !exist {
-		_, err = esc.client.CreateIndex(name).Do()
+		_, err = esc.client.CreateIndex(validIndexName).Do()
 		if err != nil {
-			log.Errorf("Failed creating index %s. %+v", name, err)
+			log.Errorf("Failed creating index %s. %+v", validIndexName, err)
 		} else {
-			log.Debugf("Index %s created", name)
+			log.Infof("Index <%s> created", validIndexName)
 		}
 	}
 
-	return err
+	return validIndexName, err
 }
 
 func (esc *ESClient) Index(indexName, doc string) error {
@@ -38,12 +42,24 @@ func (esc *ESClient) Index(indexName, doc string) error {
 	response, err := esc.client.Index().
 		Index(indexName).
 		BodyString(doc).
+		Refresh(true).
 		Do()
 	if err != nil {
 		log.Errorf("Failed indexing document %s for index %s. %+v", doc, indexName, err)
 	} else {
-		log.Debugf("Indexed document %s to index %s", response.Id, response.Index)
+		log.Infof("Indexed document %s to index %s", response.Id, response.Index)
 	}
 
 	return err
+}
+
+func (esc *ESClient) removeIllegalCharacters(indexName string) string {
+
+	match, _ := regexp.MatchString(illegalCharactersRegexp, indexName)
+	if !match {
+		return indexName
+	}
+	r, _ := regexp.Compile(illegalCharactersRegexp)
+
+	return r.ReplaceAllString(indexName, "_")
 }

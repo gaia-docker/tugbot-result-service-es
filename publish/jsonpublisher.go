@@ -16,18 +16,19 @@ func NewJsonPublisher() *JsonPublisher {
 	return &JsonPublisher{elasticclient.NewESClient()}
 }
 
-func (jp JsonPublisher) Publish(reader io.ReadCloser, indexNameSuffix string) (*string, error) {
+func (jp *JsonPublisher) Publish(reader io.ReadCloser, indexNameSuffix string) (*string, error) {
 
 	indexName := "tugbot_" + indexNameSuffix
+	log.Infof("Going to publish results to index: %s", indexName)
 	buffer, err := ioutil.ReadAll(reader)
 	if err != nil {
 		log.Errorf("Failed reading stream: %+v", err)
 		return nil, err
 	}
-	err = jp.esClient.CreateIndexIfNotExist(indexName)
+	createdIndexName, err := jp.esClient.CreateIndexIfNotExist(indexName)
 	if err != nil {
 		return nil, err
 	}
 
-	return nil, jp.esClient.Index(indexName, string(buffer))
+	return nil, jp.esClient.Index(createdIndexName, string(buffer))
 }
