@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 )
 
+const documentType = "testcase"
+
 type JsonPublisher struct {
 	esClient *elasticclient.ESClient
 }
@@ -30,5 +32,5 @@ func (jp *JsonPublisher) Publish(reader io.ReadCloser, indexNameSuffix string) (
 		return nil, err
 	}
 
-	return nil, jp.esClient.Index(createdIndexName, string(buffer))
+	return nil, jp.esClient.Index(createdIndexName, documentType, string(buffer))
 }

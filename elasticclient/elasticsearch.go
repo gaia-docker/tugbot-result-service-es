@@ -37,10 +37,11 @@ func (esc *ESClient) CreateIndexIfNotExist(name string) (string, error) {
 	return validIndexName, err
 }
 
-func (esc *ESClient) Index(indexName, doc string) error {
+func (esc *ESClient) Index(indexName, docType, doc string) error {
 
 	response, err := esc.client.Index().
 		Index(indexName).
+		Type(docType).
 		BodyString(doc).
 		Refresh(true).
 		Do()
