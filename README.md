@@ -22,7 +22,7 @@ COMMANDS:
      help, h  Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --port value, -p value   http service port (default: "8080")
+   --port value, -p value   http service port (default: "8081")
    --loglevel value, -l value  log level (default: "debug")
    --elasticurl value, -e value elastic search URL (default: "http://127.0.0.1:9200")
    --help, -h                  show help
@@ -30,4 +30,5 @@ GLOBAL OPTIONS:
 ```
 
 ## Run as docker container
-`docker run -it --name result-service-es -p 8081:8081 gaiadocker/tugbot-result-service-es`
+`docker run -it --name result-service-es -p 8081:8081 gaiadocker/tugbot-result-service-es ./tugbot-result-service-es -e http://esUrl:9200`
+
