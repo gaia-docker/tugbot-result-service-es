@@ -1,0 +1,35 @@
+hash: 15f82775c9e27a5707a7617253d29d404f8c0fe92a48151c5032ec8133a52999
+updated: 2016-07-26T09:35:50.1581016+03:00
+imports:
+- name: github.com/gorilla/context
+  version: aed02d124ae4a0e94fea4541c8effd05bf0c8296
+  subpackages:
+  - github.com\gorilla\context
+- name: github.com/gorilla/mux
+  version: d391bea3118c9fc17a88d62c9189bb791255e0ef
+  subpackages:
+  - github.com\gorilla\mux
+- name: github.com/Sirupsen/logrus
+  version: a283a10442df8dc09befd873fab202bf8a253d6a
+  subpackages:
+  - github.com\Sirupsen\logrus
+- name: github.com/stretchr/testify
+  version: d77da356e56a7428ad25149ca77381849a6a5232
+  subpackages:
+  - github.com\stretchr\testify\assert
+  - assert
+- name: github.com/urfave/cli
+  version: d9021faab69f92295ef7061bd39e4a76dcbdef32
+  subpackages:
+  - github.com\urfave\cli
+- name: golang.org/x/sys
+  version: a646d33e2ee3172a661fc09bca23bb4889a41bc8
+  subpackages:
+  - golang.org\x\sys\unix
+- name: gopkg.in/olivere/elastic.v3
+  version: f7ae701daf3abe5dfb99f57b3f47738ec93c9c26
+  subpackages:
+  - gopkg.in\olivere\elastic.v3
+  - gopkg.in\olivere\elastic.v3\backoff
+  - gopkg.in\olivere\elastic.v3\uritemplates
+devImports: []

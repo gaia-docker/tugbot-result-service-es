@@ -1,0 +1,17 @@
+package: github.com/gaia-docker/tugbot-result-service-es
+import:
+- package: github.com/Sirupsen/logrus
+  subpackages:
+  - github.com\Sirupsen\logrus
+- package: github.com/gorilla/mux
+  subpackages:
+  - github.com\gorilla\mux
+- package: github.com/urfave/cli
+  subpackages:
+  - github.com\urfave\cli
+- package: gopkg.in/olivere/elastic.v3
+  subpackages:
+  - gopkg.in\olivere\elastic.v3
+- package: github.com/stretchr/testify/assert
+  subpackages:
+  - github.com\stretchr\testify\assert
