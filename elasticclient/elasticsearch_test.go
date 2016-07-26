@@ -8,7 +8,7 @@ import (
 
 func TestRemoveIllegalCharacters_replace(t *testing.T) {
 
-	publisher := NewESClient()
+	publisher := NewESClient("http://localhost:9200")
 	indexName := publisher.removeIllegalCharacters("gaia,integartion<tests>:latest")
 	log.Infof("index name: %s", indexName)
 	assert.Equal(t, "gaia_integartion_tests__latest", indexName)
@@ -16,7 +16,7 @@ func TestRemoveIllegalCharacters_replace(t *testing.T) {
 
 func TestRemoveIllegalCharacters(t *testing.T) {
 
-	publisher := NewESClient()
+	publisher := NewESClient("http://localhost:9200")
 	indexName := publisher.removeIllegalCharacters("gaia-integartion-tests.latest")
 	log.Infof("index name: %s", indexName)
 	assert.Equal(t, indexName, indexName)

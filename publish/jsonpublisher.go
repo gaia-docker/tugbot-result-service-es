@@ -13,9 +13,9 @@ type JsonPublisher struct {
 	esClient *elasticclient.ESClient
 }
 
-func NewJsonPublisher() *JsonPublisher {
+func NewJsonPublisher(esClient *elasticclient.ESClient) *JsonPublisher {
 
-	return &JsonPublisher{elasticclient.NewESClient()}
+	return &JsonPublisher{esClient}
 }
 
 func (jp *JsonPublisher) Publish(reader io.ReadCloser, indexNameSuffix string) (*string, error) {

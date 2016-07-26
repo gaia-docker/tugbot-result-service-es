@@ -4,12 +4,23 @@ import (
 	"compress/gzip"
 	"errors"
 	log "github.com/Sirupsen/logrus"
+	"github.com/gaia-docker/tugbot-result-service-es/elasticclient"
 	"io"
 	"net/http"
 	"strings"
 )
 
-func Handle(writer http.ResponseWriter, request *http.Request) {
+type PublishHandler struct {
+	esClient *elasticclient.ESClient
+}
+
+// NewUploadHandler creates UploadHandler instance
+func NewPublishHandler(esUrl string) *PublishHandler {
+
+	return &PublishHandler{elasticclient.NewESClient(esUrl)}
+}
+
+func (ph PublishHandler) Handle(writer http.ResponseWriter, request *http.Request) {
 
 	retStatus := http.StatusOK
 	body, err := getBodyReader(request)
@@ -18,7 +29,7 @@ func Handle(writer http.ResponseWriter, request *http.Request) {
 		log.Error(err)
 	}
 	params := request.URL.Query()
-	publisher := NewJsonPublisher()
+	publisher := NewJsonPublisher(ph.esClient)
 	_, err = publisher.Publish(body, params.Get("docker.imagename"))
 	if err != nil {
 		retStatus = http.StatusInternalServerError

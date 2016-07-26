@@ -18,8 +18,8 @@ dependencies:
     - docker run --rm -v "$PWD":/go/src/github.com/gaia-docker/tugbot-result-service-es gaiadocker/tugbot-result-service-es-builder script/go_build.sh
     # create tugbot-result-service docker image
     - docker build -t gaiadocker/tugbot-result-service-es .
-    - docker tag gaiadocker/tugbot-result-service gaiadocker/tugbot-result-service-es:$CIRCLE_BUILD_NUM-$CIRCLE_BRANCH
-    - docker tag gaiadocker/tugbot-result-service gaiadocker/tugbot-result-service-es:$CIRCLE_BRANCH
+    - docker tag gaiadocker/tugbot-result-service-es gaiadocker/tugbot-result-service-es:$CIRCLE_BUILD_NUM-$CIRCLE_BRANCH
+    - docker tag gaiadocker/tugbot-result-service-es gaiadocker/tugbot-result-service-es:$CIRCLE_BRANCH
 test:
   override:
     # run tugbot-result-service coverage script

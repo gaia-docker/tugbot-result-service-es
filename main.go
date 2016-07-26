@@ -11,6 +11,7 @@ import (
 )
 
 var port string
+var esUrl string
 
 func main() {
 	app := cli.NewApp()
@@ -25,6 +26,12 @@ func main() {
 		cli.BoolFlag{
 			Name:  "debug",
 			Usage: "enable debug mode with verbose logging",
+		},
+		cli.StringFlag{
+			Name:        "elasticurl, e",
+			Value:       "http://127.0.0.1:9200",
+			Usage:       "elastic search URL",
+			Destination: &esUrl,
 		},
 	}
 	app.Name = "tugbot-result-service-es"
@@ -49,8 +56,10 @@ func before(c *cli.Context) error {
 func start(c *cli.Context) error {
 
 	log.Info("Starting tugbot elasticsearch result service...")
+	log.Info("esUrl: ", esUrl)
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/results", publish.Handle).Methods("POST").HeadersRegexp("Content-Type", "application/(gzip|json)")
+	publishHandler := publish.NewPublishHandler(esUrl)
+	router.HandleFunc("/results", publishHandler.Handle).Methods("POST").HeadersRegexp("Content-Type", "application/(gzip|json)")
 	log.Infof("Tugbot elasticsearch result service listening on port %s", port)
 
 	return http.ListenAndServe(fmt.Sprintf(":%s", port), router)

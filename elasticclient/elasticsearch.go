@@ -12,9 +12,10 @@ type ESClient struct {
 	client *elastic.Client
 }
 
-func NewESClient() *ESClient {
+func NewESClient(url string) *ESClient {
 
-	client, _ := elastic.NewClient()
+	client, _ := elastic.NewClient(elastic.SetURL(url))
+
 	return &ESClient{client}
 }
 
