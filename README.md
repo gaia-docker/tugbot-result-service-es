@@ -30,5 +30,5 @@ GLOBAL OPTIONS:
 ```
 
 ## Run as docker container
-`docker run -it --name result-service-es -p 8081:8081 gaiadocker/tugbot-result-service-es ./tugbot-result-service-es -e http://esUrl:9200`
+`docker run -it --name result-service-es -p 8081:8081 --link es:esUrl gaiadocker/tugbot-result-service-es ./tugbot-result-service-es -e http://esUrl:9200`
 
