@@ -27,11 +27,11 @@ func (jp *JsonPublisher) Publish(reader io.ReadCloser, indexNameSuffix string) (
 		return nil, err
 	}
 	createdIndexName, err := jp.esClient.CreateIndexIfNotExist(indexName)
-	doc := string(buffer)
-	log.Infof("Going to publish results to index: %s <%s>", createdIndexName, doc)
 	if err != nil {
 		return nil, err
 	}
+	doc := string(buffer)
+	log.Infof("Going to publish results to index: %s <%s>", createdIndexName, doc)
 
 	return nil, jp.esClient.Index(createdIndexName, documentType, doc)
 }
