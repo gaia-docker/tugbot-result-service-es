@@ -4,6 +4,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"gopkg.in/olivere/elastic.v3"
 	"regexp"
+	"strings"
 )
 
 const illegalCharactersRegexp = "[:,?<>/\\*?| ]"
@@ -28,9 +29,11 @@ func (esc *ESClient) CreateIndexIfNotExist(name string) (string, error) {
 	}
 	if !exist {
 		_, err = esc.client.CreateIndex(validIndexName).Do()
-		if err != nil {
+		// ignore index_already_exists_exception error, probably race condition
+		if err != nil && !strings.Contains(err.Error(), "index_already_exists_exception") {
 			log.Errorf("Failed creating index %s. %+v", validIndexName, err)
 		} else {
+			err = nil
 			log.Infof("Index <%s> created", validIndexName)
 		}
 	}

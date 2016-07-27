@@ -23,7 +23,7 @@ func (jp *JsonPublisher) Publish(reader io.ReadCloser, indexNameSuffix string) (
 	indexName := "tugbot_" + indexNameSuffix
 	buffer, err := ioutil.ReadAll(reader)
 	if err != nil {
-		log.Errorf("Failed decoding stream into TestResult: %+v", err)
+		log.Errorf("Failed reading stream %+v", err)
 		return nil, err
 	}
 	createdIndexName, err := jp.esClient.CreateIndexIfNotExist(indexName)
