@@ -1,11 +1,10 @@
 package publish
 
 import (
-	"encoding/json"
 	log "github.com/Sirupsen/logrus"
 	"github.com/gaia-docker/tugbot-result-service-es/elasticclient"
-	"github.com/gaia-docker/tugbot-result-service-es/model"
 	"io"
+	"io/ioutil"
 )
 
 const documentType = "testcase"
@@ -22,17 +21,17 @@ func NewJsonPublisher(esClient *elasticclient.ESClient) *JsonPublisher {
 func (jp *JsonPublisher) Publish(reader io.ReadCloser, indexNameSuffix string) (*string, error) {
 
 	indexName := "tugbot_" + indexNameSuffix
-	var testResult model.TestResult
-	err := json.NewDecoder(reader).Decode(&testResult)
+	buffer, err := ioutil.ReadAll(reader)
 	if err != nil {
 		log.Errorf("Failed decoding stream into TestResult: %+v", err)
 		return nil, err
 	}
-	createdIndexName, err := jp.esClient.CreateIndexIfNotExist(indexName, model.GetTestResultMapping())
-	log.Infof("Going to publish results to index: %s <%+v>", createdIndexName, testResult)
+	createdIndexName, err := jp.esClient.CreateIndexIfNotExist(indexName)
+	doc := string(buffer)
+	log.Infof("Going to publish results to index: %s <%s>", createdIndexName, doc)
 	if err != nil {
 		return nil, err
 	}
 
-	return nil, jp.esClient.Index(createdIndexName, documentType, testResult)
+	return nil, jp.esClient.Index(createdIndexName, documentType, doc)
 }

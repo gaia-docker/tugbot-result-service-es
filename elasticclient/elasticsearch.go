@@ -19,7 +19,7 @@ func NewESClient(url string) *ESClient {
 	return &ESClient{client}
 }
 
-func (esc *ESClient) CreateIndexIfNotExist(name string, mapping map[string]interface{}) (string, error) {
+func (esc *ESClient) CreateIndexIfNotExist(name string) (string, error) {
 
 	validIndexName := esc.removeIllegalCharacters(name)
 	exist, err := esc.client.IndexExists(validIndexName).Do()
@@ -33,29 +33,21 @@ func (esc *ESClient) CreateIndexIfNotExist(name string, mapping map[string]inter
 		} else {
 			log.Infof("Index <%s> created", validIndexName)
 		}
-		if mapping != nil {
-			_, err = esc.client.PutMapping().Index(validIndexName).BodyJson(mapping).Do()
-			if err != nil {
-				log.Errorf("Failed creating mapping for index %s. %+v", validIndexName, err)
-			} else {
-				log.Infof("Created mapping for index <%s>", validIndexName)
-			}
-		}
 	}
 
 	return validIndexName, err
 }
 
-func (esc *ESClient) Index(indexName, docType string, doc interface{}) error {
+func (esc *ESClient) Index(indexName, docType, doc string) error {
 
 	response, err := esc.client.Index().
 		Index(indexName).
 		Type(docType).
-		BodyJson(doc).
+		BodyString(doc).
 		Refresh(true).
 		Do()
 	if err != nil {
-		log.Errorf("Failed indexing document %+v for index %s. %+v", doc, indexName, err)
+		log.Errorf("Failed indexing document %s for index %s. %+v", doc, indexName, err)
 	} else {
 		log.Infof("Indexed document %s to index %s", response.Id, response.Index)
 	}
