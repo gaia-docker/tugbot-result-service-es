@@ -2,6 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/gaia-docker/tugbot-result-service-es.svg?style=svg)](https://circleci.com/gh/gaia-docker/tugbot-result-service-es)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gaia-docker/tugbot-result-service-es)](https://goreportcard.com/report/github.com/gaia-docker/tugbot-result-service-es)
+[![](https://imagelayers.io/badge/gaiadocker/tugbot-result-service-es:latest.svg)](https://imagelayers.io/?images=gaiadocker/tugbot-result-service-es:latest 'Get your own badge on imagelayers.io')
 
 Tugbot Result Service ES
 
