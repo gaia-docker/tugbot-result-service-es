@@ -15,7 +15,7 @@ type ESClient struct {
 
 func NewESClient(url string) *ESClient {
 
-	client, _ := elastic.NewClient(elastic.SetURL(url))
+	client, _ := elastic.NewSimpleClient(elastic.SetURL(url))
 
 	return &ESClient{client}
 }
