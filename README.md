@@ -1,5 +1,8 @@
 # tugbot-result-service-es
 
+[![CircleCI](https://circleci.com/gh/gaia-docker/tugbot-result-service-es.svg?style=svg)](https://circleci.com/gh/gaia-docker/tugbot-result-service-es)
+[![Go Report Card](https://goreportcard.com/badge/github.com/gaia-docker/tugbot-result-service-es)](https://goreportcard.com/report/github.com/gaia-docker/tugbot-result-service-es)
+
 Tugbot Result Service ES
 
 Implements [Result Service API](https://github.com/gaia-docker/tugbot/blob/master/doc/proposal/Result%20Service%20API.md#api-design) 
