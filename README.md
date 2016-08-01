@@ -14,7 +14,7 @@ and publish test results to elastic search
 $ tugbot-result-service-es help
 
 NAME:
-   tugbot-result-service-es - Implements Result Service API and publish test results to elastic search
+   tugbot-result-service-es - Publish test results to elasticsearch.
 
 USAGE:
    tugbot-result-service-es [global options] command [command options] [arguments...]
@@ -26,11 +26,12 @@ COMMANDS:
      help, h  Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --port value, -p value   http service port (default: "8081")
-   --debug value enable debug mode with verbose logging
-   --elasticurl value, -e value elastic search URL (default: "http://127.0.0.1:9200")
-   --help, -h                  show help
-   --version, -v               print the version
+   --port value, -p value        http service port (default: "8081")
+   --debug                       enable debug mode with verbose logging
+   --elasticurl value, -e value  elastic search URL (default: "http://127.0.0.1:9200")
+   --help, -h                    show help
+   --version, -v                 print the version
+
 ```
 
 ## Run as docker container
