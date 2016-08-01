@@ -27,7 +27,7 @@ COMMANDS:
 
 GLOBAL OPTIONS:
    --port value, -p value   http service port (default: "8081")
-   --loglevel value, -l value  log level (default: "debug")
+   --debug value enable debug mode with verbose logging
    --elasticurl value, -e value elastic search URL (default: "http://127.0.0.1:9200")
    --help, -h                  show help
    --version, -v               print the version
