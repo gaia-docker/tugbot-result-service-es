@@ -61,8 +61,6 @@ func start(c *cli.Context) error {
 	publishHandler := publish.NewPublishHandler(esUrl)
 	router.HandleFunc("/results", publishHandler.Handle).Methods("POST").HeadersRegexp("Content-Type", "application/(gzip|json)")
 	router.HandleFunc("/events", publishHandler.HandleEvent).Methods("POST").HeadersRegexp("Content-Type", "application/json")
-	router.HandleFunc("/a", publishHandler.HandleEvent)
-	http.HandleFunc("/b", publishHandler.HandleEvent)
 	http.ListenAndServe(":5000", nil)
 	log.Infof("Tugbot elasticsearch result service listening on port %s", port)
 
