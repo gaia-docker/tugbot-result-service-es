@@ -15,8 +15,10 @@ func TestHandleEvent(t *testing.T) {
 	handler := NewPublishHandler(httptest.NewServer(http.HandlerFunc(
 		func(writer http.ResponseWriter, request *http.Request) {
 			called = true
-			_, err := ioutil.ReadAll(request.Body)
+			body, err := ioutil.ReadAll(request.Body)
 			assert.NoError(t, err)
+			assert.True(t, strings.Contains(string(body),
+				fmt.Sprintf(`"%s":`, TugbotTimeFieldName)))
 			writer.Write([]byte(fmt.Sprintf(`{"_index":"%s","_created":"true"}`,
 				strings.Split(request.URL.RequestURI(), "/")[1])))
 		})).URL)

@@ -14,6 +14,8 @@ import (
 	"github.com/gaia-docker/tugbot-result-service-es/elasticclient"
 )
 
+const TugbotTimeFieldName = "tugbot-time"
+
 type PublishHandler struct {
 	esClient *elasticclient.ESClient
 }
@@ -59,7 +61,7 @@ func addTimeToJson(json []byte) string {
 	event := string(json)
 	event = event[1:len(event)]
 
-	return fmt.Sprintf(`{"tugbot-time":"%s", %s`, time.Now().Format(time.RFC3339), event)
+	return fmt.Sprintf(`{"%s":"%s", %s`, TugbotTimeFieldName, time.Now().Format(time.RFC3339), event)
 }
 
 func getGZipBodyReader(request *http.Request) (io.ReadCloser, error) {
