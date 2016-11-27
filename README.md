@@ -6,8 +6,7 @@
 
 Tugbot Result Service ES
 
-Implements [Result Service API](https://github.com/gaia-docker/tugbot/blob/master/doc/proposal/Result%20Service%20API.md#api-design) 
-and publish test results to elastic search
+Implements [Result Service API](https://github.com/gaia-docker/tugbot/blob/master/doc/proposal/Result%20Service%20API.md#api-design) - publish test results & events into elasticsearch.
 
 ## Usage
 ```
