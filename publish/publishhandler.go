@@ -3,10 +3,12 @@ package publish
 import (
 	"compress/gzip"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/gaia-docker/tugbot-result-service-es/elasticclient"
@@ -44,12 +46,20 @@ func (ph PublishHandler) HandleEvent(writer http.ResponseWriter, request *http.R
 
 	status := http.StatusOK
 	if body, err := ioutil.ReadAll(request.Body); err == nil {
-		ph.esClient.Index("tugbot", "event", string(body))
+		ph.esClient.Index("tugbot", "event", addTimeToJson(body))
 	} else {
 		status = http.StatusBadRequest
 		log.Error("Failed to read request JSON body.", err)
 	}
 	writer.WriteHeader(status)
+}
+
+func addTimeToJson(json []byte) string {
+
+	event := string(json)
+	event = event[1:len(event)]
+
+	return fmt.Sprintf(`{"tugbot-time":"%s", %s`, time.Now().Format(time.RFC3339), event)
 }
 
 func getGZipBodyReader(request *http.Request) (io.ReadCloser, error) {
