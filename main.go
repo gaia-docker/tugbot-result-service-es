@@ -29,7 +29,7 @@ func main() {
 		},
 		cli.StringFlag{
 			Name:        "elasticurl, e",
-			Value:       "http://127.0.0.1:9200",
+			Value:       "http://172.17.0.2:9200",
 			Usage:       "elastic search URL",
 			Destination: &esUrl,
 		},
@@ -60,6 +60,7 @@ func start(c *cli.Context) error {
 	router := mux.NewRouter().StrictSlash(true)
 	publishHandler := publish.NewPublishHandler(esUrl)
 	router.HandleFunc("/results", publishHandler.Handle).Methods("POST").HeadersRegexp("Content-Type", "application/(gzip|json)")
+	router.HandleFunc("/events", publishHandler.HandleEvent).Methods("POST").HeadersRegexp("Content-Type", "application/json")
 	log.Infof("Tugbot elasticsearch result service listening on port %s", port)
 
 	return http.ListenAndServe(fmt.Sprintf(":%s", port), router)

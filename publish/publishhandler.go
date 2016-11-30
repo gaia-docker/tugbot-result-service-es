@@ -3,12 +3,18 @@ package publish
 import (
 	"compress/gzip"
 	"errors"
-	log "github.com/Sirupsen/logrus"
-	"github.com/gaia-docker/tugbot-result-service-es/elasticclient"
+	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
+
+	log "github.com/Sirupsen/logrus"
+	"github.com/gaia-docker/tugbot-result-service-es/elasticclient"
 )
+
+const TugbotTimeFieldName = "tugbot-time"
 
 type PublishHandler struct {
 	esClient *elasticclient.ESClient
@@ -23,7 +29,7 @@ func NewPublishHandler(esUrl string) *PublishHandler {
 func (ph PublishHandler) Handle(writer http.ResponseWriter, request *http.Request) {
 
 	retStatus := http.StatusOK
-	body, err := getBodyReader(request)
+	body, err := getGZipBodyReader(request)
 	if err != nil {
 		retStatus = http.StatusBadRequest
 		log.Error(err)
@@ -38,7 +44,27 @@ func (ph PublishHandler) Handle(writer http.ResponseWriter, request *http.Reques
 	writer.WriteHeader(retStatus)
 }
 
-func getBodyReader(request *http.Request) (io.ReadCloser, error) {
+func (ph PublishHandler) HandleEvent(writer http.ResponseWriter, request *http.Request) {
+
+	status := http.StatusOK
+	if body, err := ioutil.ReadAll(request.Body); err == nil {
+		ph.esClient.Index("tugbot", "event", addTimeToJson(body))
+	} else {
+		status = http.StatusBadRequest
+		log.Error("Failed to read request JSON body.", err)
+	}
+	writer.WriteHeader(status)
+}
+
+func addTimeToJson(json []byte) string {
+
+	event := string(json)
+	event = event[1:len(event)]
+
+	return fmt.Sprintf(`{"%s":"%s", %s`, TugbotTimeFieldName, time.Now().Format(time.RFC3339), event)
+}
+
+func getGZipBodyReader(request *http.Request) (io.ReadCloser, error) {
 
 	body := request.Body
 	if body == nil {
