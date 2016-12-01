@@ -44,6 +44,7 @@ ExecStartPre=-/usr/bin/docker rm tugbot-result-service-es
 ExecStart=/bin/bash -a -c 'docker run -it \
 --name result-service-es \
 -p 8081:8081 \
+-e SERVICE_NAME=result-service-es \
 gaiadocker/tugbot-result-service-es:master \
 ./tugbot-result-service-es -e http://es.skydns.local:9200'
 
