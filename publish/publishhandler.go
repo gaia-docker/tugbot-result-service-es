@@ -48,7 +48,7 @@ func (ph PublishHandler) HandleEvent(writer http.ResponseWriter, request *http.R
 
 	status := http.StatusOK
 	if body, err := ioutil.ReadAll(request.Body); err == nil {
-		ph.esClient.Index("tugbot", "event", addTimeToJson(body))
+		ph.esClient.Index("tugbot", "event", appendTimeToJson(body))
 	} else {
 		status = http.StatusBadRequest
 		log.Error("Failed to read request JSON body.", err)
@@ -56,7 +56,7 @@ func (ph PublishHandler) HandleEvent(writer http.ResponseWriter, request *http.R
 	writer.WriteHeader(status)
 }
 
-func addTimeToJson(json []byte) string {
+func appendTimeToJson(json []byte) string {
 
 	event := string(json)
 	event = event[1:len(event)]
