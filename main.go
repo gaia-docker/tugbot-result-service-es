@@ -31,6 +31,7 @@ func main() {
 			Name:        "elasticurl, e",
 			Value:       "http://172.17.0.2:9200",
 			Usage:       "elastic search URL",
+			EnvVar:      "ELASTICSEARCH_URL",
 			Destination: &esUrl,
 		},
 	}
