@@ -42,7 +42,7 @@ ExecStartPre=-/usr/bin/docker stop tugbot-rses
 ExecStartPre=-/usr/bin/docker rm tugbot-rses
 
 ExecStart=/bin/bash -a -c 'docker run \
---name result-service-es \
+--name tugbot-rses \
 -p 8081:8081 \
 -e SERVICE_NAME=tugbot-rses \
 -e ELASTICSEARCH_URL=http://es.skydns.local:9200 \
