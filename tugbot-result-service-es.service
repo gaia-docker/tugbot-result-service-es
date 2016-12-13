@@ -46,7 +46,7 @@ ExecStart=/bin/bash -a -c 'docker run \
 -p 8081:8081 \
 -e SERVICE_NAME=tugbot-rses \
 -e ELASTICSEARCH_URL=http://es.skydns.local:9200 \
-gaiadocker/tugbot-result-service-es:master'
+gaiadocker/tugbot-result-service-es'
 
 # Stop
 ExecStop=/usr/bin/docker stop tugbot-rses
