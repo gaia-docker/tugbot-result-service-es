@@ -38,18 +38,18 @@ RestartSec=20s
 
 # Pre-start and Start
 ## Directives with "=-" are allowed to fail without consequence
-ExecStartPre=-/usr/bin/docker stop tugbot-result-service-es
-ExecStartPre=-/usr/bin/docker rm tugbot-result-service-es
+ExecStartPre=-/usr/bin/docker stop tugbot-rses
+ExecStartPre=-/usr/bin/docker rm tugbot-rses
 
-ExecStart=/bin/bash -a -c 'docker run -it \
---name result-service-es \
+ExecStart=/bin/bash -a -c 'docker run \
+--name tugbot-rses \
 -p 8081:8081 \
 -e SERVICE_NAME=tugbot-rses \
 -e ELASTICSEARCH_URL=http://es.skydns.local:9200 \
-gaiadocker/tugbot-result-service-es:master'
+gaiadocker/tugbot-result-service-es'
 
 # Stop
-ExecStop=/usr/bin/docker stop tugbot-result-service-es
+ExecStop=/usr/bin/docker stop tugbot-rses
 
 [Install]
 WantedBy=multi-user.target
