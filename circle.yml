@@ -4,6 +4,11 @@ machine:
     - sudo chmod 0755 /usr/bin/docker
   services:
     - docker
+  environment:
+    PROJECT_NAME: tugbot-result-service-es
+    IMAGE_NAME: gaiadocker/$PROJECT_NAME
+    PROJECT_PATH: /go/src/github.com/gaia-docker/$PROJECT_NAME
+    BUILDER_IMAGE_NAME: gaiadocker/base-go-build
 checkout:
   post:
     - git fetch --unshallow || true
@@ -13,19 +18,14 @@ dependencies:
   override:
     # download update_service script
     - curl -LO https://raw.githubusercontent.com/gaia-adm/gaia-fleet/master/update_service.sh && chmod +x update_service.sh
-    - chmod u+x script/go_build.sh script/coverage.sh
-    # create builder image
-    - docker build -t gaiadocker/tugbot-result-service-es-builder -f dockerbuilder/Dockerfile .
     # run go build in a docker container
-    - docker run --rm -v "$PWD":/go/src/github.com/gaia-docker/tugbot-result-service-es gaiadocker/tugbot-result-service-es-builder script/go_build.sh
+    - docker run --rm -v "$PWD":$PROJECT_PATH -w $PROJECT_PATH $BUILDER_IMAGE_NAME /go/script/go_build.sh $PROJECT_NAME
     # create tugbot-result-service docker image
-    - docker build -t gaiadocker/tugbot-result-service-es .
-    - docker tag gaiadocker/tugbot-result-service-es gaiadocker/tugbot-result-service-es:$CIRCLE_BUILD_NUM-$CIRCLE_BRANCH
-    - docker tag gaiadocker/tugbot-result-service-es gaiadocker/tugbot-result-service-es:$CIRCLE_BRANCH
+    - docker build -t $IMAGE_NAME .
 test:
   override:
     # run tugbot-result-service coverage script
-    - docker run --rm -v "$PWD":/go/src/github.com/gaia-docker/tugbot-result-service-es gaiadocker/tugbot-result-service-es-builder script/coverage.sh
+    - docker run --rm -v "$PWD":$PROJECT_PATH -w $PROJECT_PATH $BUILDER_IMAGE_NAME /go/script/coverage.sh
   post:
     # copy test results
     - cp .cover/*_tests.xml $CIRCLE_TEST_REPORTS
@@ -34,10 +34,13 @@ deployment:
   continuous:
     branch: [master, develop, /feature_.*/]
     commands:
+      # tag image with CircleCi branch and build
+      - docker tag $IMAGE_NAME $IMAGE_NAME:$CIRCLE_BUILD_NUM-$CIRCLE_BRANCH
+      - docker tag $IMAGE_NAME $IMAGE_NAME:$CIRCLE_BRANCH
       # deply image to DockerHub
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker push gaiadocker/tugbot-result-service-es
-      - ./update_service.sh -t $CIRCLE_BRANCH -b $CIRCLE_BUILD_NUM -f tugbot-result-service-es.service -n tugbot-result-service-es
+      - docker push $IMAGE_NAME
+      - ./update_service.sh -t $CIRCLE_BRANCH -b $CIRCLE_BUILD_NUM -f tugbot-result-service-es.service -n $PROJECT_NAME
 notify:
   webhooks:
     - url: https://webhook.master.gaiahub.io/wh/5a866f9b-98c9-438d-a8d4-53cf4ae9599c/4c310c8e220ee9bead74eece42ce0e109fd3535e
