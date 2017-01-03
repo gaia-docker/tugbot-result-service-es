@@ -20,11 +20,11 @@ dependencies:
     - curl -LO https://raw.githubusercontent.com/gaia-adm/gaia-fleet/master/update_service.sh && chmod +x update_service.sh
     # run go build in a docker container
     - docker run --rm -v "$PWD":$PROJECT_PATH -w $PROJECT_PATH $BUILDER_IMAGE_NAME /go/script/go_build.sh $PROJECT_NAME
-    # create tugbot-result-service docker image
+    # create tugbot-result-service-es docker image
     - docker build -t $IMAGE_NAME .
 test:
   override:
-    # run tugbot-result-service coverage script
+    # test coverage
     - docker run --rm -v "$PWD":$PROJECT_PATH -w $PROJECT_PATH $BUILDER_IMAGE_NAME /go/script/coverage.sh
   post:
     # copy test results
